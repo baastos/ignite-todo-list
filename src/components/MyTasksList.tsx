@@ -1,14 +1,6 @@
 import React from 'react';
 import { FlatList, TouchableOpacity, View, Text, StyleSheet, FlatListProps } from 'react-native';
 
-function FlatListHeaderComponent() {
-  return (
-    <View>
-      <Text style={styles.header}>Minhas tasks</Text>
-    </View>
-  )
-}
-
 interface MyTasksListProps {
   tasks: {
     id: number;
@@ -17,9 +9,22 @@ interface MyTasksListProps {
   }[];
   onPress: (id: number) => void;
   onLongPress: (id: number) => void;
+  isNightTheme: boolean;
+}
+interface FlatListHeaderProps {
+  isNightTheme: boolean;
 }
 
-export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
+function FlatListHeaderComponent({ isNightTheme }: FlatListHeaderProps) {
+  return (
+    <View>
+      <Text style={isNightTheme ? styles.headerNightTheme : styles.header}>Minhas tasks</Text>
+    </View>
+  )
+}
+export function MyTasksList({ isNightTheme, tasks, onLongPress, onPress }: MyTasksListProps) {
+
+
   return (
     <FlatList
       data={tasks}
@@ -31,21 +36,29 @@ export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
             activeOpacity={0.7}
             onPress={() => onPress(item.id)}
             onLongPress={() => onLongPress(item.id)}
-            style={item.done ? styles.taskButtonDone : styles.taskButton}
+            style={item.done ?
+              (isNightTheme ? styles.taskButtonDoneNightTheme : styles.taskButtonDone)
+              : styles.taskButton}
           >
             <View
               testID={`marker-${index}`}
-              style={item.done ? styles.taskMarkerDone : styles.taskMarker}
+              style={item.done ?
+                (isNightTheme ? styles.taskMarkerDoneNightTheme : styles.taskMarkerDone)
+                :
+                (isNightTheme ? styles.taskMarkerNightTheme : styles.taskMarker)}
             />
             <Text
-              style={item.done ? styles.taskTextDone : styles.taskText}
+              style={item.done ?
+                (isNightTheme ? styles.taskTextDoneNightTheme : styles.taskTextDone)
+                :
+                (isNightTheme ? styles.taskTextNightTheme : styles.taskText)}
             >
               {item.title}
             </Text>
           </TouchableOpacity>
         )
       }}
-      ListHeaderComponent={<FlatListHeaderComponent />}
+      ListHeaderComponent={<FlatListHeaderComponent isNightTheme={isNightTheme} />}
       ListHeaderComponentStyle={{
         marginBottom: 20
       }}
@@ -60,6 +73,11 @@ export function MyTasksList({ tasks, onLongPress, onPress }: MyTasksListProps) {
 const styles = StyleSheet.create({
   header: {
     color: '#3D3D4D',
+    fontSize: 24,
+    fontFamily: 'Poppins-SemiBold'
+  },
+  headerNightTheme: {
+    color: '#565BFF',
     fontSize: 24,
     fontFamily: 'Poppins-SemiBold'
   },
@@ -80,8 +98,19 @@ const styles = StyleSheet.create({
     borderColor: '#3D3D4D',
     marginRight: 10
   },
+  taskMarkerNightTheme: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#565BFF',
+    marginRight: 10
+  },
   taskText: {
     color: '#3D3D4D',
+  },
+  taskTextNightTheme: {
+    color: '#FFF',
   },
   taskButtonDone: {
     flex: 1,
@@ -93,6 +122,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  taskButtonDoneNightTheme: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
+    marginBottom: 4,
+    borderRadius: 4,
+    backgroundColor: '#212136',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   taskMarkerDone: {
     height: 16,
     width: 16,
@@ -100,8 +139,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#273FAD',
     marginRight: 10
   },
+  taskMarkerDoneNightTheme: {
+    height: 16,
+    width: 16,
+    borderRadius: 8,
+    backgroundColor: '#565BFF',
+    marginRight: 10
+  },
   taskTextDone: {
     color: '#A09CB1',
+    textDecorationLine: 'line-through'
+  },
+  taskTextDoneNightTheme: {
+    color: '#FFF',
     textDecorationLine: 'line-through'
   }
 })
